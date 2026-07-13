@@ -1,5 +1,6 @@
 import { GraduationCap } from 'lucide-react'
 import Reveal from '../components/Reveal'
+import SectionTransition from '../components/SectionTransition'
 
 function About() {
   return (
@@ -29,6 +30,7 @@ function About() {
           </p>
         </Reveal>
       </div>
+      <SectionTransition to="surface" label="Projects Highlights" />
     </section>
   )
 }

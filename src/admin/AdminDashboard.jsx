@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { BarChart3, BriefcaseBusiness, ExternalLink, LogOut, MessageSquareText, Sparkles } from 'lucide-react'
+import { BarChart3, BriefcaseBusiness, ExternalLink, LogOut, Menu, MessageSquareText, Sparkles, X } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import FeedbackManager from './FeedbackManager'
 import ProjectManager from './ProjectManager'
@@ -19,6 +19,7 @@ function AdminDashboard({ session }) {
   const [feedback, setFeedback] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const refresh = useCallback(async () => {
     setLoading(true)
@@ -46,26 +47,49 @@ function AdminDashboard({ session }) {
     return () => window.clearTimeout(timer)
   }, [refresh])
 
+  useEffect(() => {
+    if (!mobileMenuOpen) return undefined
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setMobileMenuOpen(false)
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [mobileMenuOpen])
+
   const signOut = async () => {
     await supabase.auth.signOut()
     window.location.assign('/admin')
   }
 
+  const selectTab = (tabId) => {
+    setActiveTab(tabId)
+    setMobileMenuOpen(false)
+  }
+
   return (
     <main className="admin-shell">
-      <aside className="admin-sidebar">
-        <a className="admin-brand" href="/"><img src="/logo.webp" alt="" /><span>Andrew<br /><small>Admin panel</small></span></a>
-        <nav>
-          {tabs.map((tab) => {
-            const Icon = tab.icon
-            return <button className={activeTab === tab.id ? 'active' : ''} type="button" onClick={() => setActiveTab(tab.id)} key={tab.id}><Icon size={18} />{tab.label}{tab.id === 'feedback' && feedback.filter((item) => item.status === 'new').length > 0 && <span>{feedback.filter((item) => item.status === 'new').length}</span>}</button>
-          })}
-        </nav>
-        <div className="admin-sidebar-footer">
-          <a href="/" target="_blank" rel="noreferrer"><ExternalLink size={16} /> View portfolio</a>
-          <button type="button" onClick={signOut}><LogOut size={16} /> Sign out</button>
+      <aside className={mobileMenuOpen ? 'admin-sidebar mobile-open' : 'admin-sidebar'}>
+        <div className="admin-sidebar-head">
+          <a className="admin-brand" href="/"><img src="/logo.webp" alt="" /><span>Andrew<br /><small>Admin panel</small></span></a>
+          <span className="admin-mobile-title">{tabs.find((tab) => tab.id === activeTab)?.label}</span>
+          <button className="admin-menu-button" type="button" aria-label={mobileMenuOpen ? 'Close admin navigation' : 'Open admin navigation'} aria-expanded={mobileMenuOpen} aria-controls="admin-navigation" onClick={() => setMobileMenuOpen((open) => !open)}>
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+        <div className="admin-nav-drawer" id="admin-navigation">
+          <nav>
+            {tabs.map((tab) => {
+              const Icon = tab.icon
+              return <button className={activeTab === tab.id ? 'active' : ''} type="button" onClick={() => selectTab(tab.id)} key={tab.id}><Icon size={18} />{tab.label}{tab.id === 'feedback' && feedback.filter((item) => item.status === 'new').length > 0 && <span>{feedback.filter((item) => item.status === 'new').length}</span>}</button>
+            })}
+          </nav>
+          <div className="admin-sidebar-footer">
+            <a href="/" target="_blank" rel="noreferrer"><ExternalLink size={16} /> View portfolio</a>
+            <button type="button" onClick={signOut}><LogOut size={16} /> Sign out</button>
+          </div>
         </div>
       </aside>
+      {mobileMenuOpen && <button className="admin-menu-backdrop" type="button" aria-label="Close admin navigation" onClick={() => setMobileMenuOpen(false)} />}
 
       <section className="admin-main">
         <header className="admin-topbar">

@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion'
 import { ExternalLink } from 'lucide-react'
+import SectionTransition from './SectionTransition'
 
-function ProjectCard({ project }) {
+function ProjectCard({ project, nextColor, nextLabel }) {
   return (
     <motion.article
       className={`project-band ${project.tone}`}
@@ -39,6 +40,7 @@ function ProjectCard({ project }) {
           <img src={project.image} alt={`${project.title} project screenshot`} />
         </motion.figure>
       </div>
+      <SectionTransition to={nextColor} label={nextLabel} />
     </motion.article>
   )
 }

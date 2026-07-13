@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import ProjectCard from '../components/ProjectCard'
 import Reveal from '../components/Reveal'
+import SectionTransition from '../components/SectionTransition'
 
 function Projects({ projects, loading }) {
   return (
@@ -43,10 +44,18 @@ function Projects({ projects, loading }) {
             </motion.a>
           ))}
         </div>
+        <SectionTransition to={projects[0]?.tone || 'surface'} label={projects[0]?.title || 'project case studies'} />
       </section>
 
       <section className="project-list" aria-label="Project case studies">
-        {projects.map((project) => <ProjectCard project={project} key={project.id || project.number} />)}
+        {projects.map((project, index) => (
+          <ProjectCard
+            project={project}
+            nextColor={projects[index + 1]?.tone || 'surface'}
+            nextLabel={projects[index + 1]?.title || 'TechStacks and Skills'}
+            key={project.id || project.number}
+          />
+        ))}
       </section>
     </>
   )
