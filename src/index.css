@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 :root {
-  font-family: 'DM Sans', Arial, sans-serif;
+  font-family: 'Poppins', Arial, sans-serif;
   color: #141518;
   background: #ececef;
   font-synthesis: none;
