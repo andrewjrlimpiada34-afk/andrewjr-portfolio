@@ -18,6 +18,10 @@ export const supabase = isSupabaseConfigured
 
 export const ADMIN_EMAIL = 'andrewjrlimpiada34@gmail.com'
 
+const safeDemoUrl = (value) => typeof value === 'string' && /^https?:\/\//i.test(value)
+  ? value
+  : null
+
 export function normalizeProject(project) {
   return {
     id: project.id,
@@ -25,6 +29,7 @@ export function normalizeProject(project) {
     title: project.title,
     type: project.type,
     image: project.image_url || project.image,
+    demoUrl: safeDemoUrl(project.demo_url || project.demoUrl),
     tone: project.tone,
     background: project.background,
     solution: project.solution,

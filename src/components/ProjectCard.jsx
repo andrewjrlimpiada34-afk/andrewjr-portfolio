@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { ExternalLink } from 'lucide-react'
 
 function ProjectCard({ project }) {
   return (
@@ -28,8 +29,13 @@ function ProjectCard({ project }) {
             <span>02</span>
             <p><strong>Solution</strong>{project.solution}</p>
           </div>
+          {project.demoUrl && (
+            <a className="project-demo-link" href={project.demoUrl} target="_blank" rel="noreferrer">
+              View live demo <ExternalLink size={16} />
+            </a>
+          )}
         </motion.div>
-        <motion.figure initial={{ opacity: 0, x: 40, rotate: 0 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.08 }} whileHover={{ y: -8, rotate: 0 }}>
+        <motion.figure className="case-image-frame" initial={{ opacity: 0, x: 40, rotate: 0 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.08 }} whileHover={{ y: -8, rotate: 0 }}>
           <img src={project.image} alt={`${project.title} project screenshot`} />
         </motion.figure>
       </div>

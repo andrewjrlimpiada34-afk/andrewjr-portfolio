@@ -3,7 +3,7 @@ import { ImagePlus, Pencil, Plus, Trash2, X } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
 const blankProject = {
-  number: '', title: '', type: '', image_url: '', tone: 'blue',
+  number: '', title: '', type: '', image_url: '', demo_url: '', tone: 'blue',
   background: '', solution: '', sort_order: 0,
 }
 
@@ -54,6 +54,7 @@ function ProjectManager({ projects, refresh }) {
       title: form.title.trim(),
       type: form.type.trim(),
       image_url: imageUrl.trim(),
+      demo_url: form.demo_url?.trim() || null,
       tone: form.tone,
       background: form.background.trim(),
       solution: form.solution.trim(),
@@ -124,6 +125,10 @@ function ProjectManager({ projects, refresh }) {
               <label><span>Color tone</span><select name="tone" value={form.tone} onChange={updateField}><option value="blue">Blue</option><option value="lime">Lime</option><option value="lilac">Lilac</option><option value="peach">Peach</option></select></label>
               <label><span>Existing image URL</span><input name="image_url" value={form.image_url} onChange={updateField} required={!imageFile} placeholder="/projects/image.png or https://..." /></label>
             </div>
+            <label>
+              <span>Live demo URL <small>(optional)</small></span>
+              <input name="demo_url" type="url" value={form.demo_url || ''} onChange={updateField} placeholder="https://your-project-demo.com" />
+            </label>
             <label className="admin-upload"><ImagePlus size={20} /><span>{imageFile ? imageFile.name : 'Upload a replacement project image'}</span><input type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => setImageFile(event.target.files?.[0] || null)} /></label>
             <label><span>Background</span><textarea name="background" value={form.background} onChange={updateField} rows="3" required /></label>
             <label><span>Solution</span><textarea name="solution" value={form.solution} onChange={updateField} rows="3" required /></label>

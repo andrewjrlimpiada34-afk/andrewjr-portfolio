@@ -7,6 +7,7 @@ create table if not exists public.projects (
   title text not null,
   type text not null,
   image_url text not null,
+  demo_url text,
   tone text not null default 'blue' check (tone in ('blue', 'lime', 'lilac', 'peach')),
   background text not null,
   solution text not null,
@@ -17,7 +18,8 @@ create table if not exists public.projects (
 create table if not exists public.skills (
   id uuid primary key default gen_random_uuid(),
   name text not null,
-  category text not null check (category in ('service', 'technology')),
+  category text not null check (category in ('skill', 'techstack')),
+  image_url text,
   sort_order integer not null default 0,
   created_at timestamptz not null default now()
 );
@@ -108,19 +110,19 @@ where not exists (select 1 from public.projects);
 
 insert into public.skills (name, category, sort_order)
 select * from (values
-  ('Website Development', 'service', 1),
-  ('Frontend Development', 'service', 2),
-  ('UI / UX Design', 'service', 3),
-  ('Responsive Interfaces', 'service', 4),
-  ('Design Prototyping', 'service', 5),
-  ('Software Engineering', 'service', 6),
-  ('React', 'technology', 1),
-  ('JavaScript', 'technology', 2),
-  ('HTML', 'technology', 3),
-  ('CSS', 'technology', 4),
-  ('Vite', 'technology', 5),
-  ('Git', 'technology', 6),
-  ('Responsive Design', 'technology', 7),
-  ('UI / UX', 'technology', 8)
+  ('Website Development', 'skill', 1),
+  ('Frontend Development', 'skill', 2),
+  ('UI / UX Design', 'skill', 3),
+  ('Responsive Interfaces', 'skill', 4),
+  ('Design Prototyping', 'skill', 5),
+  ('Software Engineering', 'skill', 6),
+  ('React', 'techstack', 1),
+  ('JavaScript', 'techstack', 2),
+  ('HTML', 'techstack', 3),
+  ('CSS', 'techstack', 4),
+  ('Vite', 'techstack', 5),
+  ('Git', 'techstack', 6),
+  ('Responsive Design', 'techstack', 7),
+  ('UI / UX', 'techstack', 8)
 ) as seed(name, category, sort_order)
 where not exists (select 1 from public.skills);

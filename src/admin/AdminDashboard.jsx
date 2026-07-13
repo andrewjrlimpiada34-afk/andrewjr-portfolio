@@ -8,7 +8,7 @@ import SkillsManager from './SkillsManager'
 const tabs = [
   { id: 'overview', label: 'Overview', icon: BarChart3 },
   { id: 'projects', label: 'Projects', icon: BriefcaseBusiness },
-  { id: 'skills', label: 'Skills', icon: Sparkles },
+  { id: 'skills', label: 'TechStacks & Skills', icon: Sparkles },
   { id: 'feedback', label: 'Feedback', icon: MessageSquareText },
 ]
 
@@ -80,7 +80,7 @@ function AdminDashboard({ session }) {
           <section className="admin-overview">
             <div className="admin-stat-grid">
               <article><BriefcaseBusiness /><span>Projects</span><strong>{projects.length}</strong><small>Published case studies</small></article>
-              <article><Sparkles /><span>Skills</span><strong>{skills.length}</strong><small>Services and technologies</small></article>
+              <article><Sparkles /><span>TechStacks & Skills</span><strong>{skills.length}</strong><small>Tools and practical capabilities</small></article>
               <article><MessageSquareText /><span>New feedback</span><strong>{feedback.filter((item) => item.status === 'new').length}</strong><small>{feedback.length} total messages</small></article>
             </div>
             <div className="admin-overview-grid">

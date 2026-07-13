@@ -5,6 +5,13 @@
     <link rel="icon" type="image/webp" href="/logo.webp" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#202129" />
+    <script>
+      try {
+        document.documentElement.dataset.theme = localStorage.getItem('portfolio-theme') || 'light'
+      } catch {
+        document.documentElement.dataset.theme = 'light'
+      }
+    </script>
     <meta
       name="description"
       content="Portfolio of Andrew B. Limpiada Jr., a junior developer creating practical, user-centered web applications and digital experiences."

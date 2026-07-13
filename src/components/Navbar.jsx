@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   FolderKanban,
@@ -6,6 +6,8 @@ import {
   LayoutDashboard,
   Menu,
   MessageCircle,
+  Moon,
+  Sun,
   UserRound,
   Wrench,
   X,
@@ -15,7 +17,7 @@ const navigation = [
   { label: 'Home', href: '#top', id: 'top', icon: Home },
   { label: 'About', href: '#about', id: 'about', icon: UserRound },
   { label: 'Projects', href: '#projects', id: 'projects', icon: FolderKanban },
-  { label: 'Services', href: '#services', id: 'services', icon: Wrench },
+  { label: 'Skills', href: '#services', id: 'services', icon: Wrench },
   { label: 'Connect', href: '#contact', id: 'contact', icon: MessageCircle },
 ]
 
@@ -23,6 +25,17 @@ function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('top')
   const [scrolled, setScrolled] = useState(false)
+  const [theme, setTheme] = useState(() => window.localStorage.getItem('portfolio-theme') || 'light')
+  const [themeNotice, setThemeNotice] = useState('')
+  const [switchingTheme, setSwitchingTheme] = useState(false)
+  const themeTimer = useRef(null)
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    window.localStorage.setItem('portfolio-theme', theme)
+  }, [theme])
+
+  useEffect(() => () => window.clearTimeout(themeTimer.current), [])
 
   useEffect(() => {
     const onScroll = () => {
@@ -50,8 +63,23 @@ function Navbar() {
 
   const closeMenu = () => setMenuOpen(false)
 
+  const toggleTheme = () => {
+    if (switchingTheme) return
+    const nextTheme = theme === 'dark' ? 'light' : 'dark'
+    setSwitchingTheme(true)
+    setThemeNotice(nextTheme === 'dark' ? 'You are about to go dark mode' : 'You are about to go light mode')
+    themeTimer.current = window.setTimeout(() => {
+      setTheme(nextTheme)
+      setThemeNotice('')
+      setSwitchingTheme(false)
+    }, 900)
+  }
+
+  const ThemeIcon = theme === 'dark' ? Sun : Moon
+
   return (
-    <header className={scrolled ? 'site-header scrolled' : 'site-header'}>
+    <>
+      <header className={scrolled ? 'site-header scrolled' : 'site-header'}>
       <a className="brand" href="#top" aria-label="Andrew Limpiada, home" onClick={closeMenu}>
         <img src="/logo.webp" alt="" />
         <span>Andrew B. Limpiada Jr.</span>
@@ -78,6 +106,18 @@ function Navbar() {
         })}
       </nav>
 
+      <button
+        className="theme-toggle desktop-theme-toggle"
+        type="button"
+        onClick={toggleTheme}
+        disabled={switchingTheme}
+        aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+        aria-pressed={theme === 'dark'}
+        title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+      >
+        <ThemeIcon size={17} />
+      </button>
+
       <a className="admin-link" href="/admin" aria-label="Open admin dashboard">
         <LayoutDashboard size={16} /> Admin
       </a>
@@ -95,10 +135,30 @@ function Navbar() {
               </motion.a>
             ))}
             <a href="/admin" onClick={closeMenu}><LayoutDashboard size={18} /> Admin dashboard</a>
+            <motion.button className="mobile-theme-toggle" type="button" onClick={toggleTheme} disabled={switchingTheme} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: navigation.length * 0.05 }}>
+              <ThemeIcon size={18} /> {theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            </motion.button>
           </motion.nav>
         )}
       </AnimatePresence>
-    </header>
+      </header>
+
+      <AnimatePresence>
+        {themeNotice && (
+          <motion.div
+            className="theme-notice"
+            role="status"
+            initial={{ opacity: 0, y: -18, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -12, scale: 0.94 }}
+            transition={{ type: 'spring', stiffness: 330, damping: 24 }}
+          >
+            <ThemeIcon size={17} />
+            <span>{themeNotice}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   )
 }
 

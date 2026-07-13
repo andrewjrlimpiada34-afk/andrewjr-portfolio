@@ -1,12 +1,18 @@
 import { useCallback, useEffect, useState } from 'react'
 import fallbackProjects from '../data/projects'
-import { services as fallbackServices, technologies as fallbackTechnologies } from '../data/skills'
+import { skills as fallbackSkills, techStacks as fallbackTechStacks } from '../data/skills'
 import { isSupabaseConfigured, normalizeProject, supabase } from '../lib/supabase'
+
+const normalizeSkill = (skill) => ({
+  id: skill.id,
+  name: skill.name,
+  image: skill.image_url || null,
+})
 
 function usePortfolioData() {
   const [projects, setProjects] = useState(fallbackProjects)
-  const [services, setServices] = useState(fallbackServices)
-  const [technologies, setTechnologies] = useState(fallbackTechnologies)
+  const [skills, setSkills] = useState(fallbackSkills)
+  const [techStacks, setTechStacks] = useState(fallbackTechStacks)
   const [loading, setLoading] = useState(isSupabaseConfigured)
 
   const refresh = useCallback(async () => {
@@ -25,10 +31,10 @@ function usePortfolioData() {
     }
 
     if (!skillResult.error && skillResult.data?.length) {
-      const serviceRows = skillResult.data.filter((skill) => skill.category === 'service')
-      const technologyRows = skillResult.data.filter((skill) => skill.category === 'technology')
-      if (serviceRows.length) setServices(serviceRows.map((skill) => skill.name))
-      if (technologyRows.length) setTechnologies(technologyRows.map((skill) => skill.name))
+      const skillRows = skillResult.data.filter((item) => ['skill', 'service'].includes(item.category))
+      const techStackRows = skillResult.data.filter((item) => ['techstack', 'technology'].includes(item.category))
+      if (skillRows.length) setSkills(skillRows.map(normalizeSkill))
+      if (techStackRows.length) setTechStacks(techStackRows.map(normalizeSkill))
     }
 
     setLoading(false)
@@ -39,7 +45,7 @@ function usePortfolioData() {
     return () => window.clearTimeout(timer)
   }, [refresh])
 
-  return { projects, services, technologies, loading, refresh }
+  return { projects, skills, techStacks, loading, refresh }
 }
 
 export default usePortfolioData

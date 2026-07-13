@@ -1,6 +1,7 @@
 import { lazy, Suspense, useCallback, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import LoadingScreen from './components/LoadingScreen'
+import BottomRedirect from './components/BottomRedirect'
 import Navbar from './components/Navbar'
 import usePortfolioData from './hooks/usePortfolioData'
 import About from './sections/About'
@@ -13,7 +14,7 @@ import './App.css'
 const AdminApp = lazy(() => import('./admin/AdminApp'))
 
 function Portfolio() {
-  const { projects, services, technologies, loading } = usePortfolioData()
+  const { projects, skills, techStacks, loading } = usePortfolioData()
   const [showIntro, setShowIntro] = useState(() => !window.matchMedia('(prefers-reduced-motion: reduce)').matches)
   const finishIntro = useCallback(() => setShowIntro(false), [])
 
@@ -22,11 +23,14 @@ function Portfolio() {
       <AnimatePresence>{showIntro && <LoadingScreen onComplete={finishIntro} />}</AnimatePresence>
       <main className="portfolio-main">
         <Navbar />
-        <Hero />
-        <About />
+        <div className="intro-shell">
+          <Hero />
+          <About />
+        </div>
         <Projects projects={projects} loading={loading} />
-        <Services services={services} technologies={technologies} />
+        <Services skills={skills} techStacks={techStacks} />
         <Contact />
+        <BottomRedirect />
       </main>
     </>
   )

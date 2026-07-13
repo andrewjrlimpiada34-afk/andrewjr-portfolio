@@ -1,15 +1,15 @@
 import Reveal from '../components/Reveal'
 import Skills from './Skills'
 
-function Services({ services, technologies }) {
+function Services({ skills, techStacks }) {
   return (
     <section className="services" id="services">
       <Reveal className="services-intro">
-        <p className="eyebrow dark">What I do</p>
-        <h2>TechStacks and Skills</h2>
-        <p>Let your idea become a clear, useful digital experience.</p>
+        <p className="eyebrow dark">Capabilities</p>
+        <h2>TechStacks<br />& Skills</h2>
+        <p>Explore my core skills, then browse the compact toolkit I use to turn ideas into working products.</p>
       </Reveal>
-      <Skills services={services} technologies={technologies} />
+      <Skills skills={skills} techStacks={techStacks} />
     </section>
   )
 }

@@ -36,7 +36,9 @@ function Projects({ projects, loading }) {
               >
                 {project.number}
               </motion.span>
-              <img src={project.image} alt={`${project.title} interface preview`} />
+              <div className="project-image-frame">
+                <img src={project.image} alt={`${project.title} interface preview`} />
+              </div>
               <strong>{project.title}</strong>
             </motion.a>
           ))}
