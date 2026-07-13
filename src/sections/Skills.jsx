@@ -103,6 +103,81 @@ function SkillCarousel({ items }) {
   )
 }
 
+function TechStackCarousel({ items }) {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const prefersReducedMotion = useReducedMotion()
+
+  useEffect(() => {
+    if (items.length < 2 || prefersReducedMotion) return undefined
+    const timer = window.setInterval(() => {
+      setActiveIndex((current) => wrapIndex(current + 1, items.length))
+    }, 3200)
+    return () => window.clearInterval(timer)
+  }, [items.length, prefersReducedMotion])
+
+  if (!items.length) return null
+
+  const selectedIndex = activeIndex % items.length
+  const move = (direction) => setActiveIndex((current) => wrapIndex(current + direction, items.length))
+
+  return (
+    <div className="techstack-showcase">
+      <div className="techstack-carousel" aria-roledescription="carousel" aria-label="TechStacks">
+        {items.map((item, index) => {
+          const position = relativePosition(index, selectedIndex, items.length)
+          const distance = Math.abs(position)
+          const isActive = position === 0
+          const isVisible = distance <= 4
+
+          return (
+            <motion.div
+              className={isActive ? 'techstack-slide active' : 'techstack-slide'}
+              key={item.id || item.name}
+              animate={{
+                x: `${position * 74}%`,
+                y: isActive ? -15 : distance * 8,
+                scale: isActive ? 1.08 : distance === 1 ? 0.92 : distance === 2 ? 0.76 : 0.62,
+                rotateY: position * -17,
+                rotateZ: position * 2.2,
+                opacity: isVisible ? (isActive ? 1 : Math.max(0.3, 0.88 - distance * 0.16)) : 0,
+              }}
+              transition={{ type: 'spring', stiffness: 170, damping: 24, mass: 0.82 }}
+              style={{ zIndex: isActive ? 10 : 9 - distance }}
+              drag={isActive && items.length > 1 ? 'x' : false}
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.15}
+              onDragEnd={(_, info) => {
+                if (Math.abs(info.offset.x) > 45) move(info.offset.x < 0 ? 1 : -1)
+              }}
+              aria-hidden={!isActive}
+            >
+              <TechBadge item={item} compact />
+            </motion.div>
+          )
+        })}
+
+        {items.length > 1 && (
+          <>
+            <button className="techstack-arrow previous" type="button" onClick={() => move(-1)} aria-label="Previous TechStack"><ChevronLeft size={21} /></button>
+            <button className="techstack-arrow next" type="button" onClick={() => move(1)} aria-label="Next TechStack"><ChevronRight size={21} /></button>
+          </>
+        )}
+      </div>
+
+      {items.length > 1 && (
+        <div className="techstack-controls">
+          <span>Auto scrolling</span>
+          <div className="techstack-dots" aria-label="Choose a TechStack">
+            {items.map((item, index) => (
+              <button className={index === selectedIndex ? 'active' : ''} type="button" onClick={() => setActiveIndex(index)} aria-label={`Show ${item.name}`} aria-current={index === selectedIndex ? 'true' : undefined} key={item.id || item.name} />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 function Skills({ skills, techStacks }) {
   return (
     <div className="skills-column">
@@ -113,19 +188,7 @@ function Skills({ skills, techStacks }) {
 
       <div className="capability-group techstack-group">
         <h3>TechStacks</h3>
-        <div className="techstack-grid">
-          {techStacks.map((item, index) => (
-            <motion.div
-              key={item.id || item.name}
-              initial={{ opacity: 0, y: 14 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.35, delay: index * 0.035 }}
-            >
-              <TechBadge item={item} compact />
-            </motion.div>
-          ))}
-        </div>
+        <TechStackCarousel items={techStacks} />
       </div>
     </div>
   )
